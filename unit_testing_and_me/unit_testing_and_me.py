@@ -20,7 +20,7 @@ def slide_it(slide):
     return (slide, slider(cols, 0.25))
 
 def type_it(slide):
-    return (slide, typewriter(0.01))
+    return (slide, typewriter(0.05))
 
 def alternator():
     alt = [False] # sure wish 2.7 had nonlocal...
