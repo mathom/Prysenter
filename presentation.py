@@ -20,6 +20,7 @@ def typewriter(duration_between_key):
     def transition(text):
         for c in text:
             sys.stdout.write(c)
+            sys.stdout.write('\a')
             sys.stdout.flush()
             if not c.isspace():
                 time.sleep(duration_between_key)
@@ -45,6 +46,7 @@ def slider(cols, delay):
                 if offset:
                     sys.stdout.write('\r'*width)
                 time.sleep(delay_step)
+            sys.stdout.write('\a')
             sys.stdout.write('\n')
     return transition
 
