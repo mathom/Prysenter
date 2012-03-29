@@ -4,7 +4,7 @@
 import sys
 sys.path.extend(('.', '..'))
 
-from presentation import Presentation, slider
+from presentation import Presentation, slider, typewriter
 
 def multiline(*args):
     return '\n'.join(args)
@@ -15,11 +15,21 @@ def subtitle(*args):
     return ''.join((args[0].title(), '\n', '\n', multiline(*args[1:])))
 st = subtitle
 
-def trans(slide):
+def slide_it(slide):
     cols = Presentation.get_term_size()[0]
     return (slide, slider(cols, 0.25))
 
-slides = map(trans, [mu('Unit Testing and Me', 'The Charles Nelson Story'),
+def type_it(slide):
+    return (slide, typewriter(0.01))
+
+def alternator():
+    alt = [False] # sure wish 2.7 had nonlocal...
+    def next(slide):
+        alt[0] = not alt[0]
+        return slide_it(slide) if alt[0] else type_it(slide)
+    return next
+
+slides = map(alternator(), [mu('Unit Testing and Me', 'The Charles Nelson Story'),
 
         st('Smoke Tests',
             "r = myfunc()",
