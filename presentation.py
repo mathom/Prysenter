@@ -16,6 +16,38 @@ def typewriter(duration_between_key):
         sys.stdout.write('\n')
     return transition
 
+def typewriter(duration_between_key):
+    def transition(text):
+        for c in text:
+            sys.stdout.write(c)
+            sys.stdout.flush()
+            if not c.isspace():
+                time.sleep(duration_between_key)
+        sys.stdout.write('\n')
+    return transition
+
+def slider(cols, delay):
+    delay_step = float(delay) / cols
+    def transition(text):
+        for line in text.split('\n'):
+
+            # don't waste time animating invisible stuff
+            if line.isspace():
+                sys.stdout.write(line)
+                sys.stdout.write('\n')
+                continue
+
+            width = len(line)
+            for offset in range(width, 0, -1):
+                sys.stdout.write(' '*offset)
+                sys.stdout.write(line[0:width-offset-1])
+                sys.stdout.flush()
+                if offset:
+                    sys.stdout.write('\r'*width)
+                time.sleep(delay_step)
+            sys.stdout.write('\n')
+    return transition
+
 def no_transition(text):
     print text
 
