@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import random
 sys.path.extend(('.', '..'))
 
-from presentation import Presentation, slider, typewriter
+from presentation import Presentation, slider, typewriter, springy
 
 def multiline(*args):
     return '\n'.join(args)
@@ -15,21 +16,23 @@ def subtitle(*args):
     return ''.join((args[0].title(), '\n', '\n', multiline(*args[1:])))
 st = subtitle
 
+cols = Presentation.get_term_size()[0]
+
 def slide_it(slide):
-    cols = Presentation.get_term_size()[0]
     return (slide, slider(cols, 0.25))
 
 def type_it(slide):
     return (slide, typewriter(0.05))
 
-def alternator():
-    alt = [False] # sure wish 2.7 had nonlocal...
-    def next(slide):
-        alt[0] = not alt[0]
-        return slide_it(slide) if alt[0] else type_it(slide)
-    return next
+def spring_it(slide):
+    return (slide, springy(cols, 2))
 
-slides = map(alternator(), [mu('Unit Testing and Me', 'The Charles Nelson Story'),
+def alternator(x):
+    trans = (slide_it(x), type_it(x), spring_it(x))
+    return random.choice(trans)
+
+slides = map(alternator, [
+        mu('Unit Testing and Me', 'The Charles Nelson Story'),
 
         st('Smoke Tests',
             "r = myfunc()",

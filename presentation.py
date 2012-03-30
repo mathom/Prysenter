@@ -33,7 +33,7 @@ def slider(cols, delay):
         for line in text.split('\n'):
 
             # don't waste time animating invisible stuff
-            if line.isspace():
+            if not line or line.isspace():
                 sys.stdout.write(line)
                 sys.stdout.write('\n')
                 continue
@@ -46,9 +46,46 @@ def slider(cols, delay):
                 if offset:
                     sys.stdout.write('\r'*width)
                 time.sleep(delay_step)
+
             sys.stdout.write('\a')
             sys.stdout.write('\n')
     return transition
+
+
+def springy(cols, delay):
+    delay_step = float(delay) / cols
+    def transition(text):
+        for line in text.split('\n'):
+
+            # don't waste time animating invisible stuff
+            if not line or line.isspace():
+                sys.stdout.write(line)
+                sys.stdout.write('\n')
+                continue
+
+            width = len(line)
+            x = width / 2
+            v = 1
+            k = 0.25
+            m = 0.8
+            d = 0.75
+            dt = delay_step
+            while abs(v) > 0.03:
+                f = -k * x
+                a = f / m
+                v = d * (v + a)
+                x += v
+                sys.stdout.write('\r'*width)
+                xi = int(x)
+                sys.stdout.write(('\r' if x<0 else ' ')*abs(xi))
+                sys.stdout.write(line[-(x<0)*xi:width-xi])
+                sys.stdout.flush()
+                time.sleep(dt)
+
+            sys.stdout.write('\a')
+            sys.stdout.write('\n')
+    return transition
+
 
 def no_transition(text):
     print text
